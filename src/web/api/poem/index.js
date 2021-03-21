@@ -5,7 +5,7 @@ const router = Router()
 
 router.get('/', async (req, res, next) => {
   try {
-    const poems = await getPoemsByAuthor(req.query.author)
+    const poems = await getPoemsByAuthor(req.query.author, req.query.page)
     res.json(poems)
   } catch (err) {
     next(err)
