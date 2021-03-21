@@ -7,7 +7,7 @@ router.get('/', async (req, res, next) => {
     const pong = await redis.ping()
     res.json({
       status: 'ok',
-      redis: pong === 'pong' ? 'ok' : 'failed'
+      redis: pong === 'PONG' ? 'ok' : 'failed'
     })
   } catch (err) {
     next(err)
