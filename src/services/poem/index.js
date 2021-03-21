@@ -29,10 +29,11 @@ const computeStartAndEnd = (page, total) => {
   if (page == 0) {
     return [0, pageSize]
   }
-  if (page >= total - pageSize) {
+  const start = pageSize * (page - 1)
+  if (start >= total - pageSize) {
     return [total - pageSize, total];
   }
-  return [page, page + pageSize];
+  return [start, start + pageSize];
 }
 
 const getPoemsByAuthor = async (authorName, page = 0) => {
