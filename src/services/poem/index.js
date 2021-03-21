@@ -51,4 +51,4 @@ const getPoemsByAuthor = async (authorName, page = 0) => {
   }
 } 
 
-module.exports.getPoemsByAuthor = memoize(getPoemsByAuthor, 'fetch_poems_by_author')
+module.exports.getPoemsByAuthor = getPoemsByAuthor; // memoize(getPoemsByAuthor, 'fetch_poems_by_author')
