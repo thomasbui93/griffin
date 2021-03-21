@@ -4,6 +4,8 @@
   "description": "Griffin utilities API",
   "main": "src/index.js",
   "scripts": {
+    "start": "NODE_ENV=production node src/index.js",
+    "dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Khoa Bui <buidangkhoa2602@gmail.com>",
@@ -14,5 +16,8 @@
     "express": "^4.17.1",
     "ioredis": "^4.17.3",
     "pino": "^6.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
