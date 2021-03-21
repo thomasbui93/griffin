@@ -1,11 +1,11 @@
-const { config } = require('dotenv')
-const Redis = require('ioredis')
+const { config } = require("dotenv");
+const Redis = require("ioredis");
 
-config()
+config();
 const redis = new Redis({
   port: process.env.REDIS_PORT,
   host: process.env.REDIS_HOST,
-  password: process.env.REDIS_AUTH
-})
+  password: process.env.REDIS_AUTH,
+});
 
-module.exports = redis
+module.exports = redis;
