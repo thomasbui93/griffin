@@ -20,7 +20,6 @@ const getAuthorFromDB = async (authorName) => {
 
 const getPoemByUrl = async (url) => {
   const poem = await redis.hget("poems", url)
-  log.info("Found poem: ", poem);
   return JSON.parse(poem)
 }
 
