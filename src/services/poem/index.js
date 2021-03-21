@@ -38,6 +38,7 @@ const computeStartAndEnd = (page, total) => {
 const getPoemsByAuthor = async (authorName, page = 0) => {
   if (!authorName || authorName.length === 0) throw new Error("Author's name should not be omitted.")
   const author = await getAuthorFromDB(authorName.split(" ").join("_"))
+  if (!author) throw new Error(`Current author: ${authorName} is not in our database. Please tried again!`)
   const links = author["links"]
   const [start, end] = computeStartAndEnd(page, links.length);
   const promises = links.slice(start, end).map(url => getPoemByUrl(url));
@@ -54,6 +55,7 @@ const getPoemsByAuthor = async (authorName, page = 0) => {
 const getRandomPoemByAuthor = async (authorName) => {
   if (!authorName || authorName.length === 0) throw new Error("Author's name should not be omitted.")
   const author = await getAuthorFromDB(authorName.split(" ").join("_"))
+  if (!author) throw new Error(`Current author: ${authorName} is not in our database. Please tried again!`)
   const links = author["links"]
   const randomIndex = Math.floor(Math.random() * links.length)
   return getPoemByUrl(links[randomIndex])
