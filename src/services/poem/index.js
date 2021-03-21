@@ -1,4 +1,5 @@
-const redis = require("../../helpers/redis")
+const redis = require("../../helpers/redis");
+const { memoize } = require("../cache/memoize");
 const log = require('../logging').child({
   tag: 'poem-service',
 })
@@ -34,7 +35,7 @@ const computeStartAndEnd = (page, total) => {
   return [page, page + pageSize];
 }
 
-module.exports.getPoemsByAuthor = async (authorName, page = 0) => {
+const getPoemsByAuthor = async (authorName, page = 0) => {
   if (!authorName || authorName.length === 0) throw new Error("Author's name should not be omitted.")
   const author = await getAuthorFromDB(authorName.split(" ").join("_"))
   const links = author["links"]
@@ -49,3 +50,5 @@ module.exports.getPoemsByAuthor = async (authorName, page = 0) => {
     total: links.length
   }
 } 
+
+module.exports.getPoemsByAuthor = memoize(getPoemsByAuthor, 'fetch_poems_by_author')
