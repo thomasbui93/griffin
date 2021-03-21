@@ -49,6 +49,15 @@ const getPoemsByAuthor = async (authorName, page = 0) => {
     end,
     total: links.length
   }
-} 
+}
 
-module.exports.getPoemsByAuthor = getPoemsByAuthor; // memoize(getPoemsByAuthor, 'fetch_poems_by_author')
+const getRandomPoemByAuthor = async (authorName) => {
+  if (!authorName || authorName.length === 0) throw new Error("Author's name should not be omitted.")
+  const author = await getAuthorFromDB(authorName.split(" ").join("_"))
+  const links = author["links"]
+  const randomIndex = Math.floor(Math.random() * links.length)
+  return getPoemByUrl(links[randomIndex])
+}
+
+module.exports.getPoemsByAuthor = memoize(getPoemsByAuthor, 'fetch_poems_by_author')
+module.exports.getRandomPoemByAuthor = memoize(getRandomPoemByAuthor, 'fetch_random_poems_by_author', 60 * 1000)
