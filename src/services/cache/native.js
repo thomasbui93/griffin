@@ -13,7 +13,7 @@ const getCache = (key) => {
   try {
     const cacheData = caches[key];
     if (typeof cacheData === "undefined") return undefined;
-    const diff = new Date() - cacheData.timestamp - cacheData.ttl;
+    const diff = new Date() - cacheData.timestamp - cacheData.ttl * 1000;
     return diff > 0 ? undefined : cacheData.data;
   } catch (err) {
     return undefined;
