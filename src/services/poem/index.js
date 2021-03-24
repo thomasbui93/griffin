@@ -71,8 +71,10 @@ const getRandomPoemByAuthor = async (authorName) => {
 
 module.exports.getPoemsByAuthor = memoize(
   getPoemsByAuthor,
-  "fetch_poems_by_author"
+  "fetch_poems_by_author",
+  60 * 1000
 );
+
 module.exports.getRandomPoemByAuthor = memoize(
   getRandomPoemByAuthor,
   "fetch_random_poems_by_author",

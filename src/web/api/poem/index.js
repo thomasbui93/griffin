@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const logging = require("../../../services/logging").child("poem_api");
 const {
   getPoemsByAuthor,
   getRandomPoemByAuthor,
@@ -8,7 +9,13 @@ const router = Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    const poems = await getPoemsByAuthor(req.query.author, req.query.page);
+    const [poems, isCached] = await getPoemsByAuthor(
+      req.query.author,
+      req.query.page
+    );
+    logging.info(
+      `Requesting poems from ${req.query.author}, ${req.query.page} cached: ${isCached}`
+    );
     res.json(poems);
   } catch (err) {
     next(err);
@@ -17,7 +24,10 @@ router.get("/", async (req, res, next) => {
 
 router.get("/random", async (req, res, next) => {
   try {
-    const poem = await getRandomPoemByAuthor(req.query.author);
+    const [poem, isCached] = await getRandomPoemByAuthor(req.query.author);
+    logging.info(
+      `Requesting random poem from ${req.query.author} cached: ${isCached}`
+    );
     res.json(poem);
   } catch (err) {
     next(err);
