@@ -19,8 +19,7 @@ const memoize = (fn, cacheSpace, ttl) => {
     const cacheKey = `${cacheSpace}__${getCacheKey(args)}`;
     try {
       const cache = await getCache(cacheKey);
-
-      if (!!cache) return cache;
+      if (!!cache) return [cache, true];
     } catch (err) {
       throw new Error(
         `Failed to get cached result for memoize function: ${err.message}`
@@ -32,7 +31,7 @@ const memoize = (fn, cacheSpace, ttl) => {
     try {
       await setCache(cacheKey, result, ttl);
 
-      return result;
+      return [result, false];
     } catch (err) {
       throw new Error(
         `Failed to set cached result for memoize function: ${err.message}`

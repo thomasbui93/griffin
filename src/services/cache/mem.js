@@ -1,8 +1,8 @@
 const { config } = require("dotenv");
 const { Client } = require("memjs");
 
-// By default, the cache is 1 hour.
-const CACHE_TLL = 1 * 1000 * 60 * 60;
+// By default, the cache is 5 minutes.
+const CACHE_TLL = 60 * 5;
 
 config();
 
@@ -11,7 +11,7 @@ const client = Client.create(process.env.MEMCACHIER_SERVERS, {
   failoverTime: 30,
   retries: 2,
   retry_delay: 0.2,
-  expires: 0,
+  expires: CACHE_TLL,
   logger: console,
   timeout: 1.0,
   conntimeout: 2.0,
