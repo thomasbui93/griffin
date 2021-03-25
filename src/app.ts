@@ -1,5 +1,5 @@
 import * as express from "express";
-import cors from "cors";
+import * as cors from "cors";
 import { config } from "dotenv";
 import errorHandler from "./web/error";
 import notFoundHandler from "./web/error/404";

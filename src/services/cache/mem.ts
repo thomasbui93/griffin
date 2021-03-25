@@ -7,7 +7,6 @@ const CACHE_TLL = 60 * 5;
 config();
 
 const client = Client.create(process.env.MEMCACHIER_SERVERS, {
-  failover: true,
   failoverTime: 30,
   retries: 2,
   retry_delay: 0.2,
@@ -37,7 +36,7 @@ export const clientGetCache = (key) =>
       } else {
         const data = val ? val.toString() : val;
         try {
-          const parsed = JSON.parse(data);
+          const parsed = JSON.parse(data.toString());
           resolve(parsed);
         } catch (error) {
           resolve(data);
