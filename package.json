@@ -9,7 +9,8 @@
     "check": "prettier --check .",
     "format": "prettier --write .",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "npm run build"
   },
   "author": "Khoa Bui <buidangkhoa2602@gmail.com>",
   "license": "MIT",
