@@ -1,9 +1,9 @@
-const { Router } = require("express");
-const redis = require("../../helpers/redis");
-const { healthCheck } = require("../../services/cache/mem");
+import { Router, Request, Response, NextFunction } from "express";
+import redis from "../../helpers/redis";
+import { healthCheck } from "../../services/cache/mem";
 
 const router = Router();
-router.get("/", async (req, res, next) => {
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const pong = await redis.ping();
     const memeCache = await healthCheck();
@@ -18,4 +18,4 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;

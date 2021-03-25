@@ -1,12 +1,13 @@
-const { getCache, setCache } = require(".");
+import cache from ".";
+const { setCache, getCache } = cache;
 
-const getCacheKey = (args) =>
+export const getCacheKey = (args) =>
   args
     .filter((arg) => !(arg instanceof Function))
     .map((arg) => JSON.stringify(arg))
     .join("_");
 
-const memoize = (fn, cacheSpace, ttl) => {
+export const memoize = (fn, cacheSpace, ttl) => {
   if (!(fn instanceof Function)) {
     throw new Error("Memoize a non-functional argument");
   }
@@ -39,6 +40,3 @@ const memoize = (fn, cacheSpace, ttl) => {
     }
   };
 };
-
-module.exports.memoize = memoize;
-module.exports.getCacheKey = getCacheKey;

@@ -1,6 +1,6 @@
 const caches = {};
 
-const setCache = (key, data, ttl) => {
+export const setCache = (key, data, ttl) => {
   caches[key] = {
     data,
     ttl,
@@ -9,21 +9,16 @@ const setCache = (key, data, ttl) => {
   return data;
 };
 
-const getCache = (key) => {
+export const getCache = (key) => {
   try {
     const cacheData = caches[key];
     if (typeof cacheData === "undefined") return undefined;
-    const diff = new Date() - cacheData.timestamp - cacheData.ttl * 1000;
+    const diff =
+      new Date().getTime() - cacheData.timestamp - cacheData.ttl * 1000;
     return diff > 0 ? undefined : cacheData.data;
   } catch (err) {
     return undefined;
   }
 };
 
-const healthCheck = () => true;
-
-module.exports = {
-  setCache,
-  getCache,
-  healthCheck,
-};
+export const healthCheck = () => true;
