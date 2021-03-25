@@ -1,5 +1,7 @@
-const appSetup = require("./app");
-const log = require("./services/logging").child({
+import appSetup from "./app";
+import logHelper from "./services/logging";
+
+const log = logHelper.child({
   tag: "server",
 });
 

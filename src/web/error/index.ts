@@ -1,8 +1,15 @@
-const log = require("../../services/logging").child({
-  tag: "uncaught",
+import { Request, Response, NextFunction } from "express";
+import logHelper from "../../services/logging";
+const log = logHelper.child({
+  tag: "uncaught-exception",
 });
 
-module.exports = (err, req, res, next) => {
+export default (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   if (res.headersSent) {
     return next(err);
   }

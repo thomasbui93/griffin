@@ -1,5 +1,5 @@
-const { config } = require("dotenv");
-const Redis = require("ioredis");
+import { config } from "dotenv";
+import Redis from "ioredis";
 
 config();
 const redis = new Redis({
@@ -8,4 +8,4 @@ const redis = new Redis({
   password: process.env.REDIS_AUTH,
 });
 
-module.exports = redis;
+export default redis;

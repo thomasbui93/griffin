@@ -1,10 +1,7 @@
-const redis = require("../../helpers/redis");
-const { memoize } = require("../cache/memoize");
-const log = require("../logging").child({
-  tag: "poem-service",
-});
-const pageSize = 5;
+import redis from "../../helpers/redis";
+import { memoize } from "../cache/memoize";
 
+const pageSize = 5;
 const authorPoemMaps = new Map();
 
 const getAuthorFromDB = async (authorName) => {
@@ -35,7 +32,7 @@ const computeStartAndEnd = (page, total) => {
   return [start, start + pageSize];
 };
 
-const getPoemsByAuthor = async (authorName, page = 0) => {
+const getPoemsByAuthorOrg = async (authorName, page = 0) => {
   if (!authorName || authorName.length === 0)
     throw new Error("Author's name should not be omitted.");
   const author = await getAuthorFromDB(authorName.split(" ").join("_"));
@@ -56,7 +53,7 @@ const getPoemsByAuthor = async (authorName, page = 0) => {
   };
 };
 
-const getRandomPoemByAuthor = async (authorName) => {
+const getRandomPoemByAuthorOrg = async (authorName) => {
   if (!authorName || authorName.length === 0)
     throw new Error("Author's name should not be omitted.");
   const author = await getAuthorFromDB(authorName.split(" ").join("_"));
@@ -69,14 +66,14 @@ const getRandomPoemByAuthor = async (authorName) => {
   return getPoemByUrl(links[randomIndex]);
 };
 
-module.exports.getPoemsByAuthor = memoize(
-  getPoemsByAuthor,
+export const getPoemsByAuthor = memoize(
+  getPoemsByAuthorOrg,
   "fetch_poems_by_author",
   60 * 5
 );
 
-module.exports.getRandomPoemByAuthor = memoize(
-  getRandomPoemByAuthor,
+export const getRandomPoemByAuthor = memoize(
+  getRandomPoemByAuthorOrg,
   "fetch_random_poems_by_author",
   60
 );
