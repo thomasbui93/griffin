@@ -7,7 +7,7 @@ const start = () => {
   appSetup()
     .then(async () => {
       const app = await appSetup()
-      const port = process.env.PORT
+      const port = process.env.PORT || 3000
       app.listen(port, () => {
         log.info(`App is running in port ${port}`)
       })

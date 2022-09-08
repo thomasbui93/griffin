@@ -15,6 +15,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "ioredis": "^4.17.3",
+    "mongodb": "^4.9.1",
     "pino": "^6.2.1"
   },
   "devDependencies": {

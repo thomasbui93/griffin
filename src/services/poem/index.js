@@ -1,51 +1,73 @@
-const redis = require("../../helpers/redis")
-const log = require('../logging').child({
-  tag: 'poem-service',
-})
-const pageSize = 5;
+const { getKey, setKey } = require('../../helpers/cache');
+const { mongoDatabase } = require('../../helpers/mongodb')
 
-const authorPoemMaps = new Map();
+const pageSize = 20;
+const db = mongoDatabase()
+const poems = db.collection('poems')
 
-const getAuthorFromDB = async (authorName) => {
-  if (authorPoemMaps.has(authorName)) {
-    return authorPoemMaps.get(authorName);
-  } else {
-    const authorItem = await redis.hget("poets", authorName)
-    const author = JSON.parse(authorItem);
-    authorPoemMaps.set(authorName, author);
-    return author;
-  }
+const getPoems = async (pageNumber, nPerPage) => {
+  const cursor = await poems.find({})
+    .skip( pageNumber > 0 ? ( ( pageNumber - 1 ) * nPerPage ) : 0 )
+    .limit(nPerPage);
+  const items = await cursor.toArray();
+  return items
 }
 
-const getPoemByUrl = async (url) => {
-  const poem = await redis.hget("poems", url)
-  log.info("Found poem: ", poem);
-  return JSON.parse(poem)
+const getPoemsByAuthor = async (author, pageNumber, nPerPage) => {
+  const cursor = await poems.find({author})
+    .skip( pageNumber > 0 ? ( ( pageNumber - 1 ) * nPerPage ) : 0 )
+    .limit(nPerPage);
+  const items = await cursor.toArray();
+  return items
 }
 
-const computeStartAndEnd = (page, total) => {
-  if (total <= pageSize) return [0, total];
-  if (page == 0) {
-    return [0, pageSize]
-  }
-  if (page >= total - pageSize) {
-    return [total - pageSize, total];
-  }
-  return [page, page + pageSize];
+const totalAuthorPoems = async (author) => {
+  const key = `author_poem_count_|${author}`;
+  if (getKey(author)) return getKey(author)
+
+  const totalPoemsInAuthor = await poems.countDocuments({author})
+  setKey(key, totalPoemsInAuthor, 60)
+  return totalAuthorPoems
 }
 
-module.exports.getPoemsByAuthor = async (authorName, page = 0) => {
-  if (!authorName || authorName.length === 0) throw new Error("Author's name should not be omitted.")
-  const author = await getAuthorFromDB(authorName.split(" ").join("_"))
-  const links = author["links"]
-  const [start, end] = computeStartAndEnd(page, links.length);
-  const promises = links.slice(start, end).map(url => getPoemByUrl(url));
-  const poems = await Promise.all(promises);
+const totalCount = async () => {
+  const key = `poem_count`;
+  if (getKey(key)) return getKey(key)
+
+  const count = await poems.countDocuments();
+  setKey(key, count, 60)
+  return count
+}
+
+module.exports.getAuthors = async () => {
+  const cursor = await poems.aggregate([
+    {"$group" : {_id: "$author", count:{$sum:1}}}
+  ])
+  const authors = await cursor.toArray()
+  return authors.map(author => ({
+    ...author,
+    url: `/api/poem/authors/${encodeURI(author._id)}`
+  }))
+}
+
+module.exports.getPoems = async (page = 0) => {
+  const total = await totalCount();
+  const poems = await getPoems(page, pageSize)
 
   return {
     poems,
-    start,
-    end,
-    total: links.length
+    page,
+    total
+  }
+}
+
+module.exports.getPoemsByAuthor = async (author, page = 0) => {
+  const total = await totalAuthorPoems(author);
+  const poems = await getPoemsByAuthor(author, page, pageSize)
+
+  return {
+    poems,
+    page,
+    total
   }
 } 
