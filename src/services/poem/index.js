@@ -27,7 +27,7 @@ const totalAuthorPoems = async (author) => {
 
   const totalPoemsInAuthor = await poems.countDocuments({author})
   setKey(key, totalPoemsInAuthor, 60)
-  return totalAuthorPoems
+  return totalPoemsInAuthor
 }
 
 const totalCount = async () => {
