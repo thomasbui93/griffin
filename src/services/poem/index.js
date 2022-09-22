@@ -5,9 +5,10 @@ const pageSize = 20;
 const db = mongoDatabase()
 const poems = db.collection('poems')
 
-const getPoems = async (pageNumber, nPerPage) => {
-  const cursor = await poems.find({})
-    .skip( pageNumber > 0 ? ( ( pageNumber - 1 ) * nPerPage ) : 0 )
+const getPoems = async (pageNumber, textQuery, nPerPage) => {
+  const queryOptions = textQuery ? {} : { $text: { $search: textQuery } }
+  const cursor = await poems.find(queryOptions)
+    .skip( pageNumber > 0 ? ((pageNumber - 1) * nPerPage ) : 0 )
     .limit(nPerPage);
   const items = await cursor.toArray();
   return items
@@ -50,9 +51,9 @@ module.exports.getAuthors = async () => {
   }))
 }
 
-module.exports.getPoems = async (page = 0) => {
+module.exports.getPoems = async (page = 0, textQuery) => {
   const total = await totalCount();
-  const poems = await getPoems(page, pageSize)
+  const poems = await getPoems(page, textQuery, pageSize)
 
   return {
     poems,
